@@ -43,8 +43,15 @@ runs:
       # setup-gradle's restore phase reads DEVELOCITY_STORE_CONFIGURATION_CACHE to
       # decide whether to fetch the remote config cache from Develocity, so the
       # opt-in must be set on this step (not just the build step).
+      #
+      # GRADLE_BUILD_ACTION_CACHE_KEY_JOB overrides the job-name component of the
+      # cache key. The seed-build and restore-build jobs have different names, so
+      # without this they compute different keys and restore never finds the
+      # seed's cache (and thus no config-cache hit). A constant makes both jobs
+      # share a key; the workflow name still disambiguates across scenarios.
       env:
         DEVELOCITY_STORE_CONFIGURATION_CACHE: ${{ inputs.restore-cc-enabled }}
+        GRADLE_BUILD_ACTION_CACHE_KEY_JOB: no-build-logic
       with:
         cache-write-only: ${{ inputs.cache-write-only }}
         cache-read-only: ${{ inputs.cache-read-only }}
