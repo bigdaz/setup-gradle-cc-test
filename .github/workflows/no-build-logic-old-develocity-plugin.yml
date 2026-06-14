@@ -1,8 +1,7 @@
-name: CC - Gradle 8.5 (no wrapper)
+name: no-build-logic - old-develocity-plugin
 
-# Scenario 7: provision Gradle 8.5 via the action and run `gradle build` instead
-# of the project's 9.5.1 wrapper. The project targets Gradle 9.5.1, so warnings
-# or failures under 8.5 are expected and themselves worth eyeballing.
+# Scenario 5: downgrade the com.gradle.develocity plugin from 4.4.2 to 4.3.3 by
+# patching settings.gradle.kts before building.
 
 on:
   workflow_dispatch:
@@ -17,6 +16,10 @@ jobs:
     - name: Checkout sources
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+    - name: Downgrade Develocity plugin to 4.3.3
+      working-directory: no-build-logic
+      run: sed -i 's/version "4.4.2"/version "4.3.3"/' settings.gradle.kts
+
     - name: Seed build (cache-write-only)
       uses: ./.github/actions/run-cc-scenario
       with:
@@ -25,8 +28,6 @@ jobs:
         develocity-url: 'https://ge.solutions-team.gradle.com'
         develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         restore-cc-enabled: true
-        gradle-version: '8.5'
-        gradle-command: 'gradle build'
 
   restore-build:
     needs: seed-build
@@ -34,6 +35,10 @@ jobs:
     steps:
     - name: Checkout sources
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+    - name: Downgrade Develocity plugin to 4.3.3
+      working-directory: no-build-logic
+      run: sed -i 's/version "4.4.2"/version "4.3.3"/' settings.gradle.kts
 
     - name: Verify build (cache-read-only)
       uses: ./.github/actions/run-cc-scenario
@@ -43,5 +48,3 @@ jobs:
         develocity-url: 'https://ge.solutions-team.gradle.com'
         develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         restore-cc-enabled: true
-        gradle-version: '8.5'
-        gradle-command: 'gradle build'

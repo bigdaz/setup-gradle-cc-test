@@ -1,4 +1,4 @@
-name: CC - no Develocity access key
+name: no-build-logic - no-access-key
 
 # Scenario 3: no Develocity access key is provided to the action
 # (develocity-access-key is empty).

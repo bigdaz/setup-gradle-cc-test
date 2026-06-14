@@ -22,9 +22,10 @@ jobs:
 
     - name: Trigger all scenario workflows on this ref
       run: |
-        for wf in no-build-logic cc-no-optin cc-no-develocity-url \
-                  cc-no-access-key cc-invalid-access-key \
-                  cc-old-develocity-plugin cc-no-encryption-key cc-gradle-8.5; do
+        for wf in no-build-logic-success no-build-logic-no-optin \
+                  no-build-logic-no-develocity-url no-build-logic-no-access-key \
+                  no-build-logic-invalid-access-key no-build-logic-old-develocity-plugin \
+                  no-build-logic-no-encryption-key no-build-logic-gradle-8.5; do
           echo "Dispatching $wf.yml on $GITHUB_REF_NAME"
           gh workflow run "$wf.yml" --ref "$GITHUB_REF_NAME"
         done

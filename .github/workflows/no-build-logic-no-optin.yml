@@ -1,4 +1,4 @@
-name: CC - no config-cache opt-in
+name: no-build-logic - no-optin
 
 # Scenario 1: the DEVELOCITY_STORE_CONFIGURATION_CACHE opt-in is disabled
 # (restore-cc-enabled: false). Everything else matches the happy path.

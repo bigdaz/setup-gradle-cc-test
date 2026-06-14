@@ -1,7 +1,9 @@
-name: CC - no encryption key
+name: no-build-logic - no-develocity-url
 
-# Scenario 6: no cache encryption key is provided to the action
-# (cache-encryption-key is empty).
+# Scenario 2: no Develocity server URL is provided to the action (develocity-url
+# is empty), so no short-lived access token is minted. NOTE: the project's
+# settings.gradle.kts still hardcodes the server; revisit after eyeballing if a
+# truly server-less project is wanted (see plan notes).
 
 on:
   workflow_dispatch:
@@ -20,8 +22,8 @@ jobs:
       uses: ./.github/actions/run-cc-scenario
       with:
         cache-write-only: true
-        cache-encryption-key: ''
-        develocity-url: 'https://ge.solutions-team.gradle.com'
+        cache-encryption-key: 'AAAAAAAAAAAAAAAAAAAAAA=='
+        develocity-url: ''
         develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         restore-cc-enabled: true
 
@@ -36,7 +38,7 @@ jobs:
       uses: ./.github/actions/run-cc-scenario
       with:
         cache-read-only: true
-        cache-encryption-key: ''
-        develocity-url: 'https://ge.solutions-team.gradle.com'
+        cache-encryption-key: 'AAAAAAAAAAAAAAAAAAAAAA=='
+        develocity-url: ''
         develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         restore-cc-enabled: true

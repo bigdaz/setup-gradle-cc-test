@@ -40,6 +40,11 @@ runs:
   steps:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@prerelease/config-cache-support
+      # setup-gradle's restore phase reads DEVELOCITY_STORE_CONFIGURATION_CACHE to
+      # decide whether to fetch the remote config cache from Develocity, so the
+      # opt-in must be set on this step (not just the build step).
+      env:
+        DEVELOCITY_STORE_CONFIGURATION_CACHE: ${{ inputs.restore-cc-enabled }}
       with:
         cache-write-only: ${{ inputs.cache-write-only }}
         cache-read-only: ${{ inputs.cache-read-only }}
@@ -52,5 +57,3 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: ${{ inputs.gradle-command }}
-      env:
-        DEVELOCITY_STORE_CONFIGURATION_CACHE: ${{ inputs.restore-cc-enabled }}
