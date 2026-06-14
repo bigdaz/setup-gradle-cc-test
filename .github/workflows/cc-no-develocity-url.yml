@@ -1,4 +1,9 @@
-name: Build and publish scan
+name: CC - no Develocity URL
+
+# Scenario 2: no Develocity server URL is provided to the action (develocity-url
+# is empty), so no short-lived access token is minted. NOTE: the project's
+# settings.gradle.kts still hardcodes the server; revisit after eyeballing if a
+# truly server-less project is wanted (see plan notes).
 
 on:
   workflow_dispatch:
@@ -18,7 +23,7 @@ jobs:
       with:
         cache-write-only: true
         cache-encryption-key: 'AAAAAAAAAAAAAAAAAAAAAA=='
-        develocity-url: 'https://ge.solutions-team.gradle.com'
+        develocity-url: ''
         develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         restore-cc-enabled: true
 
@@ -34,6 +39,6 @@ jobs:
       with:
         cache-read-only: true
         cache-encryption-key: 'AAAAAAAAAAAAAAAAAAAAAA=='
-        develocity-url: 'https://ge.solutions-team.gradle.com'
+        develocity-url: ''
         develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         restore-cc-enabled: true

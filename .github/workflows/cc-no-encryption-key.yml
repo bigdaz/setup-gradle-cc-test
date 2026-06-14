@@ -1,4 +1,7 @@
-name: Build and publish scan
+name: CC - no encryption key
+
+# Scenario 6: no cache encryption key is provided to the action
+# (cache-encryption-key is empty).
 
 on:
   workflow_dispatch:
@@ -17,7 +20,7 @@ jobs:
       uses: ./.github/actions/run-cc-scenario
       with:
         cache-write-only: true
-        cache-encryption-key: 'AAAAAAAAAAAAAAAAAAAAAA=='
+        cache-encryption-key: ''
         develocity-url: 'https://ge.solutions-team.gradle.com'
         develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         restore-cc-enabled: true
@@ -33,7 +36,7 @@ jobs:
       uses: ./.github/actions/run-cc-scenario
       with:
         cache-read-only: true
-        cache-encryption-key: 'AAAAAAAAAAAAAAAAAAAAAA=='
+        cache-encryption-key: ''
         develocity-url: 'https://ge.solutions-team.gradle.com'
         develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         restore-cc-enabled: true

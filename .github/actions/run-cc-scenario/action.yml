@@ -1,0 +1,56 @@
+name: 'Run config-cache scenario'
+description: >-
+  Shared core for the config-cache test scenarios: runs setup-gradle (prerelease
+  config-cache-support ref) and a Gradle build. Each scenario workflow supplies
+  the inputs that vary; the stable bits (the action ref, the build step) live here.
+
+inputs:
+  cache-write-only:
+    description: 'Set cache to write-only (seed builds).'
+    default: 'false'
+  cache-read-only:
+    description: 'Set cache to read-only (restore/verify builds).'
+    default: 'false'
+  develocity-url:
+    description: 'Develocity server URL. Empty means not provided.'
+    default: ''
+  develocity-access-key:
+    description: 'Develocity access key. Empty means not provided.'
+    default: ''
+  cache-encryption-key:
+    description: 'Cache encryption key. Empty means not provided.'
+    default: ''
+  gradle-version:
+    description: 'Gradle version to provision. Empty means use the project wrapper.'
+    default: ''
+  gradle-command:
+    description: 'Command used to run the build.'
+    default: './gradlew build'
+  working-directory:
+    description: 'Directory containing the Gradle project to build.'
+    default: 'no-build-logic'
+  restore-cc-enabled:
+    description: >-
+      Controls the config-cache opt-in. Passed through as the
+      DEVELOCITY_STORE_CONFIGURATION_CACHE env var ('true' or 'false').
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@prerelease/config-cache-support
+      with:
+        cache-write-only: ${{ inputs.cache-write-only }}
+        cache-read-only: ${{ inputs.cache-read-only }}
+        cache-encryption-key: ${{ inputs.cache-encryption-key }}
+        develocity-url: ${{ inputs.develocity-url }}
+        develocity-access-key: ${{ inputs.develocity-access-key }}
+        gradle-version: ${{ inputs.gradle-version }}
+
+    - name: Run build
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: ${{ inputs.gradle-command }}
+      env:
+        DEVELOCITY_STORE_CONFIGURATION_CACHE: ${{ inputs.restore-cc-enabled }}

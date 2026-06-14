@@ -1,0 +1,30 @@
+name: Run all scenarios
+
+# Single entry point to re-execute every scenario at once. Fans out via
+# `gh workflow run` so each scenario runs as its own independent workflow run,
+# keeping its distinct workflow name (and unique Gradle User Home cache keys).
+# This is why we do NOT use workflow_call here.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write       # required to dispatch other workflows
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+    - name: Trigger all scenario workflows on this ref
+      run: |
+        for wf in no-build-logic cc-no-optin cc-no-develocity-url \
+                  cc-no-access-key cc-invalid-access-key \
+                  cc-old-develocity-plugin cc-no-encryption-key cc-gradle-8.5; do
+          echo "Dispatching $wf.yml on $GITHUB_REF_NAME"
+          gh workflow run "$wf.yml" --ref "$GITHUB_REF_NAME"
+        done

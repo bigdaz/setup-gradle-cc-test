@@ -1,4 +1,8 @@
-name: Build and publish scan
+name: CC - Gradle 8.5 (no wrapper)
+
+# Scenario 7: provision Gradle 8.5 via the action and run `gradle build` instead
+# of the project's 9.5.1 wrapper. The project targets Gradle 9.5.1, so warnings
+# or failures under 8.5 are expected and themselves worth eyeballing.
 
 on:
   workflow_dispatch:
@@ -21,6 +25,8 @@ jobs:
         develocity-url: 'https://ge.solutions-team.gradle.com'
         develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         restore-cc-enabled: true
+        gradle-version: '8.5'
+        gradle-command: 'gradle build'
 
   restore-build:
     needs: seed-build
@@ -37,3 +43,5 @@ jobs:
         develocity-url: 'https://ge.solutions-team.gradle.com'
         develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         restore-cc-enabled: true
+        gradle-version: '8.5'
+        gradle-command: 'gradle build'

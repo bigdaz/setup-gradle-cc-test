@@ -1,4 +1,6 @@
-name: Build and publish scan
+name: CC - invalid Develocity access key
+
+# Scenario 4: an invalid Develocity access key is provided to the action.
 
 on:
   workflow_dispatch:
@@ -19,7 +21,7 @@ jobs:
         cache-write-only: true
         cache-encryption-key: 'AAAAAAAAAAAAAAAAAAAAAA=='
         develocity-url: 'https://ge.solutions-team.gradle.com'
-        develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+        develocity-access-key: 'ge.solutions-team.gradle.com=invalid-bogus-key'
         restore-cc-enabled: true
 
   restore-build:
@@ -35,5 +37,5 @@ jobs:
         cache-read-only: true
         cache-encryption-key: 'AAAAAAAAAAAAAAAAAAAAAA=='
         develocity-url: 'https://ge.solutions-team.gradle.com'
-        develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+        develocity-access-key: 'ge.solutions-team.gradle.com=invalid-bogus-key'
         restore-cc-enabled: true
