@@ -16,10 +16,6 @@ on:
         description: 'Develocity server URL. Empty means not provided.'
         type: string
         default: 'https://ge.solutions-team.gradle.com'
-      develocity-access-key:
-        description: 'Develocity access key. Empty means not provided.'
-        type: string
-        default: ''
       cache-encryption-key:
         description: 'Cache encryption key. Empty means not provided.'
         type: string
@@ -44,6 +40,9 @@ on:
         description: 'Directory containing the Gradle project to build.'
         type: string
         default: 'no-build-logic'
+    secrets:
+      develocity-access-key:
+        description: The Develocity Access Key
 
 permissions:
   contents: read

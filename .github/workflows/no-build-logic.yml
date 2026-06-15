@@ -16,52 +16,60 @@ jobs:
     uses: ./.github/workflows/scenario.yml
     with:
       name: success
+    secrets:
       develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
 
   no-optin:
     uses: ./.github/workflows/scenario.yml
     with:
       name: no-optin
-      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
       restore-cc-enabled: false
+    secrets:
+      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
 
   no-develocity-url:
     uses: ./.github/workflows/scenario.yml
     with:
       name: no-develocity-url
       develocity-url: ''
+    secrets:
       develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
 
   no-access-key:
     uses: ./.github/workflows/scenario.yml
     with:
       name: no-access-key
-      # develocity-access-key omitted -> not provided
+    secrets:
+      develocity-access-key: ''
 
   invalid-access-key:
     uses: ./.github/workflows/scenario.yml
     with:
       name: invalid-access-key
+    secrets:
       develocity-access-key: 'ge.solutions-team.gradle.com=invalid-bogus-key'
 
   old-develocity-plugin:
     uses: ./.github/workflows/scenario.yml
     with:
       name: old-develocity-plugin
-      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
       dv-plugin-version: '4.3.3'
+    secrets:
+      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
 
   no-encryption-key:
     uses: ./.github/workflows/scenario.yml
     with:
       name: no-encryption-key
-      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
       cache-encryption-key: ''
+    secrets:
+      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
 
   gradle-8.5:
     uses: ./.github/workflows/scenario.yml
     with:
       name: gradle-8.5
-      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
       gradle-version: '8.5'
       gradle-command: 'gradle build'
+    secrets:
+      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
