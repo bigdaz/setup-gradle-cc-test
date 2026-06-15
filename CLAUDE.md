@@ -47,14 +47,14 @@ The report shows, per scenario:
 ### Trigger a run (optional)
 
 ```bash
-R=bigdaz/setup-gradle-cc-test
+R=gradle/actions-testbed
 gh workflow run no-build-logic.yml -R "$R" --ref main   # needs the workflow on the default branch
 ```
 
 ### Extract the data
 
 ```bash
-R=bigdaz/setup-gradle-cc-test
+R=gradle/actions-testbed
 # latest run, or set RUN_ID explicitly:
 RUN_ID=$(gh run list -R "$R" --workflow no-build-logic.yml -L1 --json databaseId --jq '.[0].databaseId')
 
