@@ -68,7 +68,7 @@ jobs:
   gradle-8.5:
     uses: ./.github/workflows/scenario.yml
     with:
-      name: gradle-8.5
+      name: 'gradle-8-5'
       gradle-version: '8.5'
       gradle-command: 'gradle build'
     secrets:
