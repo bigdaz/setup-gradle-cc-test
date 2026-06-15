@@ -1,4 +1,4 @@
-name: no-build-logic
+name: Tests for build with no-build-logic
 
 # Single entry point: every config-cache scenario is a job that calls the
 # reusable scenario.yml workflow (seed-build + restore-build) with the inputs
