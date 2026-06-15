@@ -1,0 +1,112 @@
+name: config-cache scenario
+
+# Reusable workflow (replaces the run-cc-scenario composite action). Runs a
+# config-cache scenario as a write-only seed-build followed by a read-only
+# restore-build. The scenario `name` is used as GRADLE_BUILD_ACTION_CACHE_KEY_JOB
+# so seed and restore share a cache key while different scenarios stay isolated.
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: 'Scenario name. Used as the cache key job so seed/restore share a key and scenarios do not interfere.'
+        type: string
+        required: true
+      develocity-url:
+        description: 'Develocity server URL. Empty means not provided.'
+        type: string
+        default: 'https://ge.solutions-team.gradle.com'
+      cache-encryption-key:
+        description: 'Cache encryption key. Empty means not provided.'
+        type: string
+        default: 'AAAAAAAAAAAAAAAAAAAAAA=='
+      gradle-version:
+        description: 'Gradle version to provision. Empty means use the project wrapper.'
+        type: string
+        default: ''
+      gradle-command:
+        description: 'Command used to run the build.'
+        type: string
+        default: './gradlew build'
+      restore-cc-enabled:
+        description: 'Config-cache opt-in, passed through as DEVELOCITY_STORE_CONFIGURATION_CACHE.'
+        type: boolean
+        default: true
+      dv-plugin-version:
+        description: 'If set, rewrite the com.gradle.develocity plugin version in settings.gradle.kts before building.'
+        type: string
+        default: ''
+      working-directory:
+        description: 'Directory containing the Gradle project to build.'
+        type: string
+        default: 'no-build-logic'
+    secrets:
+      develocity-access-key:
+        description: The Develocity Access Key
+
+permissions:
+  contents: read
+
+jobs:
+  seed-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+    - name: Update Develocity plugin version
+      if: inputs.dv-plugin-version != ''
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        DV_PLUGIN_VERSION: ${{ inputs.dv-plugin-version }}
+      run: |
+        sed -i -E 's/(id\("com\.gradle\.develocity"\) version ")[^"]*"/\1'"${DV_PLUGIN_VERSION}"'"/' settings.gradle.kts
+        grep 'com.gradle.develocity' settings.gradle.kts
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@prerelease/config-cache-support
+      env:
+        DEVELOCITY_STORE_CONFIGURATION_CACHE: ${{ inputs.restore-cc-enabled }}
+        GRADLE_BUILD_ACTION_CACHE_KEY_JOB: ${{ inputs.name }}
+      with:
+        cache-write-only: true
+        cache-encryption-key: ${{ inputs.cache-encryption-key }}
+        develocity-url: ${{ inputs.develocity-url }}
+        develocity-access-key: ${{ secrets.develocity-access-key }}
+        gradle-version: ${{ inputs.gradle-version }}
+
+    - name: Run build
+      working-directory: ${{ inputs.working-directory }}
+      run: ${{ inputs.gradle-command }}
+
+  restore-build:
+    needs: seed-build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+    - name: Update Develocity plugin version
+      if: inputs.dv-plugin-version != ''
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        DV_PLUGIN_VERSION: ${{ inputs.dv-plugin-version }}
+      run: |
+        sed -i -E 's/(id\("com\.gradle\.develocity"\) version ")[^"]*"/\1'"${DV_PLUGIN_VERSION}"'"/' settings.gradle.kts
+        grep 'com.gradle.develocity' settings.gradle.kts
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@prerelease/config-cache-support
+      env:
+        DEVELOCITY_STORE_CONFIGURATION_CACHE: ${{ inputs.restore-cc-enabled }}
+        GRADLE_BUILD_ACTION_CACHE_KEY_JOB: ${{ inputs.name }}
+      with:
+        cache-read-only: true
+        cache-encryption-key: ${{ inputs.cache-encryption-key }}
+        develocity-url: ${{ inputs.develocity-url }}
+        develocity-access-key: ${{ secrets.develocity-access-key }}
+        gradle-version: ${{ inputs.gradle-version }}
+
+    - name: Run build
+      working-directory: ${{ inputs.working-directory }}
+      run: ${{ inputs.gradle-command }}

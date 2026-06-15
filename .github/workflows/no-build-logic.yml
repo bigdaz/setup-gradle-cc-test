@@ -1,0 +1,76 @@
+name: Tests for build with no-build-logic
+
+# Single entry point: every config-cache scenario is a job that calls the
+# reusable scenario.yml workflow (seed-build + restore-build) with the inputs
+# that vary. Each scenario's `name` becomes GRADLE_BUILD_ACTION_CACHE_KEY_JOB,
+# so scenarios do not share cache entries.
+
+on:
+  workflow_dispatch:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  success:
+    uses: ./.github/workflows/scenario.yml
+    with:
+      name: success
+    secrets:
+      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+
+  no-optin:
+    uses: ./.github/workflows/scenario.yml
+    with:
+      name: no-optin
+      restore-cc-enabled: false
+    secrets:
+      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+
+  no-develocity-url:
+    uses: ./.github/workflows/scenario.yml
+    with:
+      name: no-develocity-url
+      develocity-url: ''
+    secrets:
+      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+
+  no-access-key:
+    uses: ./.github/workflows/scenario.yml
+    with:
+      name: no-access-key
+    secrets:
+      develocity-access-key: ''
+
+  invalid-access-key:
+    uses: ./.github/workflows/scenario.yml
+    with:
+      name: invalid-access-key
+    secrets:
+      develocity-access-key: 'ge.solutions-team.gradle.com=invalid-bogus-key'
+
+  old-develocity-plugin:
+    uses: ./.github/workflows/scenario.yml
+    with:
+      name: old-develocity-plugin
+      dv-plugin-version: '4.3.3'
+    secrets:
+      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+
+  no-encryption-key:
+    uses: ./.github/workflows/scenario.yml
+    with:
+      name: no-encryption-key
+      cache-encryption-key: ''
+    secrets:
+      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+
+  gradle-8-5:
+    uses: ./.github/workflows/scenario.yml
+    with:
+      name: 'gradle-8-5'
+      gradle-version: '8.5'
+      gradle-command: 'gradle build'
+    secrets:
+      develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
