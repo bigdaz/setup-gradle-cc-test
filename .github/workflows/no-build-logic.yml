@@ -65,7 +65,7 @@ jobs:
     secrets:
       develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
 
-  gradle-8.5:
+  gradle-8-5:
     uses: ./.github/workflows/scenario.yml
     with:
       name: 'gradle-8-5'
